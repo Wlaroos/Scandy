@@ -748,7 +748,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.096582174, y: 0.16376987}
+  m_Offset: {x: 0.06253016, y: 0.14863563}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -758,7 +758,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.2476945, y: 0.9154231}
+  m_Size: {x: 0.99798036, y: 0.6581421}
   m_EdgeRadius: 0
 --- !u!1 &619394800
 GameObject:
@@ -1036,6 +1036,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ede046aaea304a84fb88815734dc921e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _candySprites:
+  - {fileID: -3366272070310193754, guid: 1c1330b6c74e61c40b64ba0effdab5e6, type: 3}
+  - {fileID: -2950404794562567556, guid: 1c1330b6c74e61c40b64ba0effdab5e6, type: 3}
+  - {fileID: -3032129168011833662, guid: 1c1330b6c74e61c40b64ba0effdab5e6, type: 3}
+  - {fileID: 7839794291830354235, guid: 1c1330b6c74e61c40b64ba0effdab5e6, type: 3}
+  - {fileID: -6859763343790416647, guid: 1c1330b6c74e61c40b64ba0effdab5e6, type: 3}
 --- !u!1 &1437100855
 GameObject:
   m_ObjectHideFlags: 0
