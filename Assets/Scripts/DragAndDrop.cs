@@ -36,9 +36,10 @@ public class DragAndDrop : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (_collider != null)
+        if (_collider.CompareTag("Zone"))
         {
-
+            Destroy(gameObject);
+            return;
         }
 
         _sg.sortingLayerName = "Default";
