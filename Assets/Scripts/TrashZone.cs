@@ -27,7 +27,7 @@ public class TrashZone : MonoBehaviour
     {
         _cd = collision;
 
-        if (collision.CompareTag("Candy") && _sr != null)
+        if (collision.CompareTag("Candy") && _sr != null && collision.GetComponent<Candy>().Scanned == true)
         {
             _sr.color = _highlightColor;
         }
@@ -35,7 +35,7 @@ public class TrashZone : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.CompareTag("Candy") && _sr != null)
+        if(collision.CompareTag("Candy") && _sr != null  && collision.GetComponent<Candy>().Scanned == true)
         {
             _sr.color = _normalColor;
         }

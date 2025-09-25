@@ -71,8 +71,11 @@ public class Candy : MonoBehaviour
                 _pc.SetPath(i, path.ToArray());
             }
         }
+
+        // Ensure the child is always upright
+        transform.GetChild(0).rotation = Quaternion.Euler (0.0f, 0.0f, gameObject.transform.rotation.z * -1.0f);
     }
-   
+
     private Vector2 GetMouseWorldPosition()
     {
         // Convert screen position to world position in 2D
@@ -97,28 +100,36 @@ public class Candy : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if(_collider == null)
+        if (_collider == null)
         {
             _sg.sortingLayerName = "Default";
             return;
         }
         else if (_collider.CompareTag("Zone"))
         {
-            if (_popEffectPrefab != null)
+            if (_scanned)
             {
-                // Set particle color to match SpriteRenderer color
-                ParticleSystem ps = _popEffectPrefab.GetComponent<ParticleSystem>();
-                if (_sr != null && ps != null)
+                if (_popEffectPrefab != null)
                 {
-                    var main = ps.main;
-                    main.startColor = _sr.color;
+                    // Set particle color to match SpriteRenderer color
+                    ParticleSystem ps = _popEffectPrefab.GetComponent<ParticleSystem>();
+                    if (_sr != null && ps != null)
+                    {
+                        var main = ps.main;
+                        main.startColor = _sr.color;
+                    }
+
+                    Instantiate(_popEffectPrefab, transform.position, Quaternion.Euler(-90f, 0f, 0f));
                 }
 
-                Instantiate(_popEffectPrefab, transform.position, Quaternion.Euler(-90f, 0f, 0f));
+                Destroy(gameObject);
+                return;
             }
-
-            Destroy(gameObject);
-            return;
+            else
+            {
+                _sg.sortingLayerName = "Default";
+                return;
+            }
         }
     }
 
@@ -132,6 +143,85 @@ public class Candy : MonoBehaviour
         if (_collider == collision)
         {
             _collider = null;
+        }
+    }
+
+    public void ScannedByMachine()
+    {
+        _scanned = true;
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+            if (hit.collider != null && hit.collider.gameObject == gameObject)
+            {
+                OnCandyMouseDown();
+            }
+        }
+
+        if (Input.GetMouseButton(0) && _isDragging)
+        {
+            OnCandyMouseDrag();
+        }
+
+        if (Input.GetMouseButtonUp(0) && _isDragging)
+        {
+            OnCandyMouseUp();
+        }
+    }
+
+    private bool _isDragging = false;
+
+    private void OnCandyMouseDown()
+    {
+        _mouseOffset = (Vector2)transform.position - GetMouseWorldPosition();
+        _sg.sortingLayerName = "Dragging";
+        _isDragging = true;
+    }
+
+    private void OnCandyMouseDrag()
+    {
+        Vector2 targetPosition = GetMouseWorldPosition() + _mouseOffset;
+        transform.position = Vector2.Lerp(transform.position, targetPosition, _dragSpeed * Time.deltaTime);
+    }
+
+    private void OnCandyMouseUp()
+    {
+        _sg.sortingLayerName = "Default";
+        _isDragging = false;
+        if (_collider == null)
+        {
+            return;
+        }
+        else if (_collider.CompareTag("Zone"))
+        {
+            if (_scanned)
+            {
+                if (_popEffectPrefab != null)
+                {
+                    // Set particle color to match SpriteRenderer color
+                    ParticleSystem ps = _popEffectPrefab.GetComponent<ParticleSystem>();
+                    if (_sr != null && ps != null)
+                    {
+                        var main = ps.main;
+                        main.startColor = _sr.color;
+                    }
+
+                    Instantiate(_popEffectPrefab, transform.position, Quaternion.Euler(-90f, 0f, 0f));
+                }
+
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }
