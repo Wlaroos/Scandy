@@ -11,12 +11,11 @@ GameObject:
   - component: {fileID: 7583731771821932697}
   - component: {fileID: 6971328172356069641}
   - component: {fileID: 7118921423026693913}
-  - component: {fileID: 1358507191408819428}
   - component: {fileID: 8152836213189805061}
   - component: {fileID: 6781750521233244753}
   m_Layer: 0
   m_Name: Candy
-  m_TagString: Untagged
+  m_TagString: Candy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -155,19 +154,6 @@ PolygonCollider2D:
       - {x: 0.95972097, y: -0.33228767}
       - {x: 1.0255511, y: -0.067430854}
   m_UseDelaunayMesh: 0
---- !u!114 &1358507191408819428
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7347564665718616342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34592f4192bc6254cb27c687744206d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _dragSpeed: 25
 --- !u!210 &8152836213189805061
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -198,3 +184,5 @@ MonoBehaviour:
   - {fileID: -3032129168011833662, guid: 1c1330b6c74e61c40b64ba0effdab5e6, type: 3}
   - {fileID: 7839794291830354235, guid: 1c1330b6c74e61c40b64ba0effdab5e6, type: 3}
   - {fileID: -6859763343790416647, guid: 1c1330b6c74e61c40b64ba0effdab5e6, type: 3}
+  _dragSpeed: 25
+  _popEffectPrefab: {fileID: 8690986951395437789, guid: f7c8c2021d58821419c6003d4ddfcbb5, type: 3}

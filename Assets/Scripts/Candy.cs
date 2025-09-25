@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Candy : MonoBehaviour
 {
@@ -8,10 +9,19 @@ public class Candy : MonoBehaviour
     private Color32 _randomColor;
     [SerializeField] private Sprite[] _candySprites;
 
+    // Drag and Drop variables
+    [SerializeField] private float _dragSpeed = 25f; // Speed of interpolation
+    private Vector2 _mouseOffset;
+    private Collider2D _collider;
+    private SortingGroup _sg;
+
+    [SerializeField] private GameObject _popEffectPrefab;
+
     private void Awake()
     {
         _sr = GetComponent<SpriteRenderer>();
         _pc = GetComponent<PolygonCollider2D>();
+        _sg = GetComponent<SortingGroup>();
 
         if (_sr == null)
         {
@@ -47,7 +57,7 @@ public class Candy : MonoBehaviour
 
     void Start()
     {
-                // Update the PolygonCollider2D to match the new sprite
+        // Update the PolygonCollider2D to match the new sprite
         if (_pc != null && _sr != null && _sr.sprite != null)
         {
             _pc.pathCount = _sr.sprite.GetPhysicsShapeCount();
@@ -57,6 +67,60 @@ public class Candy : MonoBehaviour
                 _sr.sprite.GetPhysicsShape(i, path);
                 _pc.SetPath(i, path.ToArray());
             }
+        }
+    }
+   
+    private Vector2 GetMouseWorldPosition()
+    {
+        // Convert screen position to world position in 2D
+        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    }
+
+    private void OnMouseDown()
+    {
+        // Calculate the offset between the object's position and the mouse position
+        _mouseOffset = (Vector2)transform.position - GetMouseWorldPosition();
+        _sg.sortingLayerName = "Dragging";
+    }
+
+    private void OnMouseDrag()
+    {
+        // Calculate the target position based on the mouse position and offset
+        Vector2 targetPosition = GetMouseWorldPosition() + _mouseOffset;
+
+        // Smoothly interpolate the object's position towards the target position
+        transform.position = Vector2.Lerp(transform.position, targetPosition, _dragSpeed * Time.deltaTime);
+    }
+
+    private void OnMouseUp()
+    {
+        if(_collider == null)
+        {
+            _sg.sortingLayerName = "Default";
+            return;
+        }
+        else if (_collider.CompareTag("Zone"))
+        {
+            if(_popEffectPrefab != null)
+            {
+                Instantiate(_popEffectPrefab, transform.position, Quaternion.Euler(-90f, 0f, 0f));
+            }
+
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        _collider = collision;
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (_collider == collision)
+        {
+            _collider = null;
         }
     }
 }

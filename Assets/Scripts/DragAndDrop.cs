@@ -4,7 +4,6 @@ public class DragAndDrop : MonoBehaviour
 {
     [SerializeField] private float _dragSpeed = 25f; // Speed of interpolation
     private Vector2 _mouseOffset;
-    private Collider2D _collider;
     private SortingGroup _sg;
 
     private void Awake()
@@ -36,25 +35,6 @@ public class DragAndDrop : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (_collider.CompareTag("Zone"))
-        {
-            Destroy(gameObject);
-            return;
-        }
-
         _sg.sortingLayerName = "Default";
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        _collider = collision;
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (_collider == collision)
-        {
-            _collider = null;
-        }
     }
 }

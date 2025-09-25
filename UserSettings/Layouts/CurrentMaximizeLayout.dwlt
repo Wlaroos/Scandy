@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 7892
+  controlID: 19967
   draggingID: 0
 --- !u!114 &2
 MonoBehaviour:
@@ -97,7 +97,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 1
+    m_EnableMouseInput: 0
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 7863
+  controlID: 19937
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 7798
+  controlID: 19884
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -894,9 +894,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -1.7420541, y: 0.15084721, z: 0.0074393903}
+    m_Target: {x: 0.857841, y: 0.06805377, z: 0.026622608}
     speed: 2
-    m_Value: {x: -1.7420541, y: 0.15084721, z: 0.0074393903}
+    m_Value: {x: 0.857841, y: 0.06805377, z: 0.026622608}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -946,9 +946,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 9.256098
+    m_Target: 7.337776
     speed: 2
-    m_Value: 9.256098
+    m_Value: 7.337776
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1059,7 +1059,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 7864
+  controlID: 19938
   draggingID: 0
 --- !u!114 &11
 MonoBehaviour:
@@ -1080,8 +1080,8 @@ MonoBehaviour:
     y: 0
     width: 810
     height: 246
-  m_MinSize: {x: 231, y: 276}
-  m_MaxSize: {x: 10001, y: 10026}
+  m_MinSize: {x: 230, y: 250}
+  m_MaxSize: {x: 10000, y: 10000}
   m_ActualView: {fileID: 12}
   m_Panes:
   - {fileID: 12}
@@ -1134,7 +1134,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets
+    - Assets/Scripts
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1144,15 +1144,15 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets
+  - Assets/Scripts
   m_LastFoldersGridSize: -1
   m_LastProjectPath: D:\Unity\Projects\Scandy
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 1ab20000
-    m_LastClickedID: 45594
+    m_SelectedIDs: 02b40000
+    m_LastClickedID: 46082
     m_ExpandedIDs: 000000001ab200001cb200001eb2000038b400003cb40000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1210,7 +1210,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 40cfffff
     m_LastClickedInstanceID: -12480
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000d86f0000127a00003c6e000072020000d08800002ec001006c5f0300d8810000000000005a900000aea00000ac7300009472000000b4000018ba00005cb30000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1321,8 +1321,8 @@ MonoBehaviour:
     y: 0
     width: 453
     height: 951
-  m_MinSize: {x: 276, y: 76}
-  m_MaxSize: {x: 4001, y: 4026}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
