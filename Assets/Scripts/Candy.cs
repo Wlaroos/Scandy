@@ -17,6 +17,9 @@ public class Candy : MonoBehaviour
 
     [SerializeField] private GameObject _popEffectPrefab;
 
+    private bool _scanned = false;
+    public bool Scanned { get { return _scanned; } set { _scanned = value; } }
+
     private void Awake()
     {
         _sr = GetComponent<SpriteRenderer>();
@@ -45,9 +48,9 @@ public class Candy : MonoBehaviour
 
         // Generate and assign a random color
         _randomColor = new Color32(
-            (byte)Random.Range(100, 256),
-            (byte)Random.Range(100, 256),
-            (byte)Random.Range(100, 256),
+            (byte)Random.Range(1, 256),
+            (byte)Random.Range(1, 256),
+            (byte)Random.Range(1, 256),
             255);
         if (_sr != null)
         {
@@ -101,8 +104,16 @@ public class Candy : MonoBehaviour
         }
         else if (_collider.CompareTag("Zone"))
         {
-            if(_popEffectPrefab != null)
+            if (_popEffectPrefab != null)
             {
+                // Set particle color to match SpriteRenderer color
+                ParticleSystem ps = _popEffectPrefab.GetComponent<ParticleSystem>();
+                if (_sr != null && ps != null)
+                {
+                    var main = ps.main;
+                    main.startColor = _sr.color;
+                }
+
                 Instantiate(_popEffectPrefab, transform.position, Quaternion.Euler(-90f, 0f, 0f));
             }
 
