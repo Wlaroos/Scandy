@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_Candy
+  m_Name: M_Screen
   m_Shader: {fileID: 4800000, guid: 80b54c41b7a67a64984c54cccc3223ef, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -30,15 +30,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Brightness: 2
-    - _FlickerAmount: 0
-    - _FlickerSpeed: 0.1
+    - _Alpha: 0.5
+    - _Brightness: 0.5
+    - _FlickerAmount: 0.5
+    - _FlickerSpeed: 3
     - _Greyscale: 1
-    - _Monochrome: 0.8
-    - _NoiseIntensity: 0
+    - _Monochrome: 0.85
+    - _NoiseIntensity: 0.025
     - _ScanlineDensity: 50
-    - _ScanlineIntensity: 1
-    - _Vignette: 0
+    - _ScanlineIntensity: 0.5
+    - _Vignette: 0.75
     m_Colors:
     - _Tint: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

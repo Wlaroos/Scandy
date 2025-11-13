@@ -1,4 +1,4 @@
-Shader "Custom/IdleComputerScreen"
+Shader "Custom/ComputerScreenEffect"
 {
     Properties
     {
@@ -13,6 +13,7 @@ Shader "Custom/IdleComputerScreen"
         _FlickerSpeed ("Flicker Speed", Range(0.1,10)) = 1.2
         _Vignette ("Vignette Strength", Range(0,1)) = 0.5
         [Toggle] _Greyscale ("Greyscale", Float) = 0
+        _Alpha ("Output Alpha", Range(0,1)) = 1
     }
     SubShader
     {
@@ -41,6 +42,7 @@ Shader "Custom/IdleComputerScreen"
             float _FlickerSpeed;
             float _Vignette;
             float _Greyscale;
+            float _Alpha;
 
             struct appdata
             {
@@ -110,7 +112,10 @@ Shader "Custom/IdleComputerScreen"
                 float finalLum = dot(color, float3(0.299,0.587,0.114));
                 color = lerp(color, float3(finalLum, finalLum, finalLum), saturate(_Greyscale));
 
-                return fixed4(color, src.a);
+                // apply global alpha slider multiplied by source alpha
+                float outA = saturate(_Alpha * src.a);
+
+                return fixed4(saturate(color), outA);
             }
             ENDCG
         }
