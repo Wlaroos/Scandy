@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TransitionManager : MonoBehavior
+public class TransitionManager : MonoBehaviour
 {
     [Header("Prefabs to spawn")]
     public List<GameObject> _prefabs = new List<GameObject>();
@@ -31,6 +31,9 @@ public class TransitionManager : MonoBehavior
 
     // currently displayed center object (may be mid-animation)
     GameObject _currentCenter;
+
+    // guard: only allow starting a new slide if the incoming object has finished moving to center
+    bool _isAnimating = false;
 
     // Start is called once before the first execution of Update after the MonoBehavior is created
     void Start()
@@ -86,6 +89,13 @@ public class TransitionManager : MonoBehavior
             return;
         }
 
+        // Prevent starting a new slide while the incoming is still animating to center
+        if (_isAnimating)
+        {
+            //Debug.Log("SlideManager: slide request ignored - incoming is still animating to center.");
+            return;
+        }
+
         // compute positions in world space
         var leftPos = ViewportToWorld(_leftViewportX, _centerViewportY, _spawnZ);
         var centerPos = ViewportToWorld(_centerViewportX, _centerViewportY, _spawnZ);
@@ -105,6 +115,9 @@ public class TransitionManager : MonoBehavior
         // subsequent calls treat it as the center (prevents "skipping" when spamming)
         _currentCenter = instance;
 
+        // mark that incoming will animate to center
+        _isAnimating = true;
+
         // start coroutine to animate outgoing (if any) and incoming simultaneously
         StartCoroutine(SlideRoutine(instance, outgoing, leftPos, centerPos, rightPos));
     }
@@ -120,27 +133,38 @@ public class TransitionManager : MonoBehavior
         // Set incoming initial position in case something moved it
         incoming.transform.position = startIncoming;
 
+        // A velocity reference for SmoothDamp so the outgoing motion is continuous
+        Vector3 outgoingVelocity = Vector3.zero;
+
         // animate
         while (elapsed < _slideDuration)
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / _slideDuration);
-            // smooth step for nicer motion
+            // smooth step for nicer motion on the incoming item
             float s = Mathf.SmoothStep(0f, 1f, t);
 
-            // incoming: left -> center
+            // incoming: left -> center (same easing as before)
             if (incoming != null)
                 incoming.transform.position = Vector3.Lerp(startIncoming, centerPos, s);
 
-            // outgoing: wherever it was -> right
+            // outgoing: use SmoothDamp for a less harsh/easier-to-follow motion
             if (outgoing != null)
-                outgoing.transform.position = Vector3.Lerp(outgoingStart, endOutgoing, s);
+            {
+                // smoothTime controls how soft the movement feels; use a fraction of the total duration
+                float smoothTime = Mathf.Max(0.01f, _slideDuration * 0.6f);
+                outgoing.transform.position = Vector3.SmoothDamp(outgoing.transform.position, endOutgoing, ref outgoingVelocity, smoothTime, Mathf.Infinity, Time.deltaTime);
+            }
 
             yield return null;
         }
 
         // finalize positions
         if (incoming != null) incoming.transform.position = centerPos;
+
+        // incoming has reached center; allow new slides now
+        _isAnimating = false;
+
         if (outgoing != null) outgoing.transform.position = endOutgoing;
 
         // destroy the outgoing object to keep scene clean
