@@ -12,7 +12,8 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _SPECKINVERTSHAPE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -39,8 +40,16 @@ Material:
     - _NoiseScale: 1
     - _ScanlineDensity: 50
     - _ScanlineIntensity: 0.25
+    - _SpeckAnimate: 0
+    - _SpeckDensity: 0.05
+    - _SpeckIntensity: 0.512
+    - _SpeckInvertShape: 1
+    - _SpeckScale: 32
+    - _SpeckSeed: 17
+    - _SpeckUseWorldPos: 0
     - _Threshold: 0
     m_Colors:
+    - _SpeckColor: {r: 0.2901961, g: 0.8470589, b: 0.6862745, a: 1}
     - _Tint: {r: 0.27058825, g: 0.7058824, b: 0.56461734, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

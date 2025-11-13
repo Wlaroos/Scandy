@@ -15,6 +15,16 @@ Shader "Custom/XRayEffect"
         _Flicker ("Flicker Amount", Range(0,1)) = 0.04
         _Alpha ("Output Alpha", Range(0,1)) = 1
         [Toggle] _Invert ("Invert X-Ray (negative)", Float) = 0
+
+        // speck / imperfection controls
+        _SpeckIntensity ("Speck Intensity", Range(0,1)) = 0.6
+        _SpeckScale ("Speck Scale (cells per UV)", Range(1,128)) = 16
+        _SpeckDensity ("Speck Density (chance)", Range(0,1)) = 0.06
+        _SpeckSeed ("Speck Seed", Float) = 17
+        [Toggle] _SpeckAnimate ("Speck Animate (time)", Float) = 1
+        [Toggle] _SpeckUseWorldPos ("Specks use World Pos", Float) = 0
+        [Toggle] _SpeckInvertShape ("Invert Speck Shape", Float) = 0
+        _SpeckColor ("Speck Color", Color) = (1,1,1,1)
     }
 
     SubShader
@@ -49,6 +59,16 @@ Shader "Custom/XRayEffect"
             float _Alpha;
             float _Invert;
 
+            // speck variables (must match Properties)
+            float _SpeckIntensity;
+            float _SpeckScale;
+            float _SpeckDensity;
+            float _SpeckSeed;
+            float _SpeckAnimate;
+            float _SpeckUseWorldPos;
+            float _SpeckInvertShape;
+            float4 _SpeckColor;
+            
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -59,6 +79,7 @@ Shader "Custom/XRayEffect"
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
+                float3 worldPos : TEXCOORD1;
             };
 
             v2f vert(appdata v)
@@ -66,6 +87,8 @@ Shader "Custom/XRayEffect"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                // pass world pos if user wants world-based specks
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
                 return o;
             }
 
@@ -138,19 +161,110 @@ Shader "Custom/XRayEffect"
                 // --- Flicker (low frequency) ---
                 float flick = 1.0 + sin(_Time.y * 1.2) * _Flicker * (0.5 + 0.5*hash21(float2(uv.x*12.3, uv.y*7.7)));
 
-                // compose final color
-                float3 col = (xbase + edgeCol) * scanCol;
-                col += noise;
-                col *= flick;
+                // --- Speck imperfections (cell-based, multiple shapes) ---
+                float2 speckCoords;
+                if (_SpeckUseWorldPos > 0.5)
+                {
+                    speckCoords = i.worldPos.xz * 0.1 * _SpeckScale;
+                }
+                else
+                {
+                    speckCoords = uv * _SpeckScale;
+                    if (_SpeckAnimate > 0.5)
+                        speckCoords += float2(_Time.y * 0.02, _Time.y * 0.013) * _SpeckScale;
+                }
 
-                // optional invert (negative)
-                if (_Invert > 0.5)
-                    col = 1.0 - saturate(col);
+                float2 cell = floor(speckCoords);
+                float2 local = frac(speckCoords) - 0.5; // center at 0 (-0.5..0.5)
+                float h = hash21(cell + _SpeckSeed);
+                float hasSpeck = step(h, _SpeckDensity); // 1 if h < density
 
-                // premultiply alpha using user alpha and source alpha
-                float outA = saturate(_Alpha * src.a);
+                // normalized local coords in -1..1
+                float2 p = local * 2.0;
 
-                return fixed4(saturate(col), outA);
+                // shape choice per-cell
+                float shapePick = hash21(cell + float2(_SpeckSeed, 7.3));
+                int shapeID = (int)floor(shapePick * 6.0); // 0..5 shapes
+
+                // common size/thickness controls
+                float baseSize = 0.35; // tune per-shape
+                // per-cell random size & thickness (0..1 from hash21)
+                float sizeSeed = hash21(cell + float2(11.7, 4.2));
+                float thicknessSeed = hash21(cell + float2(21.3, 9.1));
+                // map seeds to useful ranges (tweak min/max as desired)
+                float sizeJitter = lerp(0.6, 1.4, sizeSeed);      // 60%..140% of base
+                float thicknessJitter = lerp(0.6, 1.6, thicknessSeed); // 60%..160% of base
+                float size = baseSize * sizeJitter;
+                float thickness = 0.12 * thicknessJitter;
+
+                // rotation for oriented shapes
+                float ang = hash21(cell + float2(2.1, 9.3)) * 6.2831853;
+                float ca = cos(ang), sa = sin(ang);
+                float2 rp = float2(ca * p.x - sa * p.y, sa * p.x + ca * p.y);
+
+                // shape masks (1=center, 0=outside)
+                float circle = 1.0 - smoothstep(size, size * 0.65, length(p));
+                float square = 1.0 - smoothstep(size, size * 0.65, max(abs(p.x), abs(p.y)));
+                float thinLine = 1.0 - smoothstep(thickness, thickness * 0.7, abs(rp.y)); // thin line oriented by ang
+                float plus = (1.0 - smoothstep(thickness, thickness * 0.7, abs(p.x))) + (1.0 - smoothstep(thickness, thickness * 0.7, abs(p.y)));
+                      plus = saturate(plus); // combine hor+vert
+                float xcross = (1.0 - smoothstep(thickness, thickness * 0.7, abs(rp.x))) * (1.0 - smoothstep(thickness, thickness * 0.7, abs(rp.y)));
+                      // blob: use small cell-local noise for an irregular spot
+                float blob = 0.0;
+                {
+                    // sample a few hash offsets for lumpy look
+                    float a = hash21(cell + p.xy * 13.7);
+                    float b = hash21(cell + p.yx * 7.1);
+                    float lump = (a * 0.6 + b * 0.4);
+                    float r = length(p) * (0.9 + 0.6 * (lump - 0.5));
+                    blob = 1.0 - smoothstep(size * 1.1, size * 0.7, r);
+                }
+
+                // pick mask by shapeID
+                float shapeMask = 0.0;
+                if (shapeID == 0) shapeMask = circle;
+                else if (shapeID == 1) shapeMask = square;
+                else if (shapeID == 2) shapeMask = plus;
+                else if (shapeID == 3) shapeMask = xcross;
+                else if (shapeID == 4) shapeMask = thinLine;
+                else shapeMask = blob;
+
+                // final speck mask: fade out toward the cell border
+                float edgeFade = smoothstep(0.49, 0.45, max(abs(local.x), abs(local.y)));
+
+                // allow flipping the shape (if you previously had shapes cut out of squares)
+                float shapeFinal = lerp(shapeMask, 1.0 - shapeMask, _SpeckInvertShape);
+
+                // only apply speck inside chosen cells and inside the shape
+                float speckMask = hasSpeck * edgeFade * shapeFinal;
+
+                // speck darkness factor (0 = no effect, 1 = full dark)
+                float speckDark = saturate(speckMask * _SpeckIntensity);
+
+                // --- Compose final color (before transparency) ---
+                float3 baseCol = xbase * scanCol * flick + edgeCol + noise;
+
+                // apply invert only to the base X-ray/edge/noise
+                float3 baseAfterInvert = (_Invert > 0.5) ? (1.0 - baseCol) : baseCol;
+
+                // speck color (white by default)
+                float3 speckCol = _SpeckColor.rgb * (speckMask * _SpeckIntensity);
+
+                // combine base + specks
+                float3 composed = baseAfterInvert + speckCol;
+
+                // use sprite alpha so the shader follows sprite transparency
+                float srcA = src.a;
+
+                // optional: skip pixels that are effectively transparent
+                if (srcA <= 0.01)
+                    discard;
+
+                // modulate final RGB by the sprite alpha and output alpha by sprite alpha * _Alpha
+                float3 outRgb = composed * srcA;
+                float outA = srcA * _Alpha;
+
+                return float4(saturate(outRgb), outA);
             }
             ENDCG
         }

@@ -39,8 +39,16 @@ Material:
     - _NoiseScale: 1
     - _ScanlineDensity: 50
     - _ScanlineIntensity: 0
+    - _SpeckAnimate: 0
+    - _SpeckDensity: 0
+    - _SpeckIntensity: 0
+    - _SpeckInvertShape: 0
+    - _SpeckScale: 1
+    - _SpeckSeed: 0
+    - _SpeckUseWorldPos: 0
     - _Threshold: 0
     m_Colors:
+    - _SpeckColor: {r: 1, g: 1, b: 1, a: 1}
     - _Tint: {r: 0.39999998, g: 0.9, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
