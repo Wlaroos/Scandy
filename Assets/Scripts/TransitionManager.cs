@@ -5,29 +5,32 @@ using UnityEngine;
 public class TransitionManager : MonoBehaviour
 {
     [Header("Prefabs to spawn")]
-    public List<GameObject> _prefabs = new List<GameObject>();
+    [SerializeField] private List<GameObject> _prefabs = new List<GameObject>();
 
     [Header("Slide timing / positions")]
     [Tooltip("Seconds to move between offscreen and center")]
-    public float _slideDuration = 0.8f;
+    [SerializeField] private float _slideDuration = 0.8f;
 
     [Tooltip("Viewport X where new items spawn (off-screen left)")]
-    public float _leftViewportX = -0.2f;
+    [SerializeField] private float _leftViewportX = -0.2f;
 
     [Tooltip("Viewport X used as center (usually 0.5)")]
-    public float _centerViewportX = 0.5f;
+    [SerializeField] private float _centerViewportX = 0.5f;
 
     [Tooltip("Viewport Y used for spawn & center (usually 0.5)")]
-    public float _centerViewportY = 0.5f;
+    [SerializeField] private float _centerViewportY = 0.5f;
 
     [Tooltip("Viewport X where outgoing items end (off-screen right)")]
-    public float _rightViewportX = 1.2f;
+    [SerializeField] private float _rightViewportX = 1.2f;
 
     [Tooltip("World Z coordinate for spawned objects (common plane)")]
-    public float _spawnZ = 0f;
+    [SerializeField] private float _spawnZ = 0f;
+
+    [Tooltip("Random rotation range (degrees) applied to spawned objects around Z axis")]
+    [SerializeField] private float _randomRotationRange = 0f;
 
     [Tooltip("Optional parent for spawned objects")]
-    public Transform _parent;
+    [SerializeField] private Transform _parent;
 
     // currently displayed center object (may be mid-animation)
     GameObject _currentCenter;
@@ -136,6 +139,21 @@ public class TransitionManager : MonoBehaviour
         // A velocity reference for SmoothDamp so the outgoing motion is continuous
         Vector3 outgoingVelocity = Vector3.zero;
 
+        // Apply random rotation to incoming object
+        float randomAngle = 0f;
+        if (_randomRotationRange > 0f)
+        {
+            randomAngle = Random.Range(-_randomRotationRange, _randomRotationRange);
+        }
+
+        // capture incoming start eulers and target eulers so we interpolate consistently
+        // Use quaternions for interpolation to avoid wraparound issues at ±180°
+        Quaternion incomingStartRot = incoming != null ? incoming.transform.rotation : Quaternion.identity;
+        Quaternion incomingTargetRot = Quaternion.Euler(0f, 0f, randomAngle);
+        // outgoing start should come from the outgoing object's actual rotation (if present)
+        Quaternion outgoingStartRot = outgoing != null ? outgoing.transform.rotation : Quaternion.identity;
+        Quaternion outgoingTargetRot = Quaternion.Euler(0f, 0f, -randomAngle);
+
         // animate
         while (elapsed < _slideDuration)
         {
@@ -146,7 +164,10 @@ public class TransitionManager : MonoBehaviour
 
             // incoming: left -> center (same easing as before)
             if (incoming != null)
+            {
                 incoming.transform.position = Vector3.Lerp(startIncoming, centerPos, s);
+                incoming.transform.rotation = Quaternion.Slerp(incomingStartRot, incomingTargetRot, s);
+            }
 
             // outgoing: use SmoothDamp for a less harsh/easier-to-follow motion
             if (outgoing != null)
@@ -154,6 +175,7 @@ public class TransitionManager : MonoBehaviour
                 // smoothTime controls how soft the movement feels; use a fraction of the total duration
                 float smoothTime = Mathf.Max(0.01f, _slideDuration * 0.6f);
                 outgoing.transform.position = Vector3.SmoothDamp(outgoing.transform.position, endOutgoing, ref outgoingVelocity, smoothTime, Mathf.Infinity, Time.deltaTime);
+                outgoing.transform.rotation = Quaternion.Slerp(outgoingStartRot, outgoingTargetRot, s);
             }
 
             yield return null;
@@ -161,11 +183,13 @@ public class TransitionManager : MonoBehaviour
 
         // finalize positions
         if (incoming != null) incoming.transform.position = centerPos;
+        if (incoming != null) incoming.transform.rotation = incomingTargetRot;
 
         // incoming has reached center; allow new slides now
         _isAnimating = false;
 
         if (outgoing != null) outgoing.transform.position = endOutgoing;
+        if (outgoing != null) outgoing.transform.rotation = outgoingTargetRot;
 
         // destroy the outgoing object to keep scene clean
         if (outgoing != null)

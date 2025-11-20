@@ -159,6 +159,7 @@ MonoBehaviour:
   _centerViewportY: 0.5
   _rightViewportX: 1.5
   _spawnZ: 0
+  _randomRotationRange: 55
   _parent: {fileID: 61430042}
 --- !u!4 &61430042
 Transform:
@@ -257,7 +258,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.15, y: 1.15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -481,8 +482,8 @@ Transform:
   m_GameObject: {fileID: 2006623420}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.062506, y: 0.218755, z: 0}
-  m_LocalScale: {x: 9.812485, y: 6.125022, z: 1}
+  m_LocalPosition: {x: 0.0726, y: 0.2517, z: 0}
+  m_LocalScale: {x: 11.320544, y: 7.0814815, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
