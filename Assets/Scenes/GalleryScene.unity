@@ -151,6 +151,8 @@ MonoBehaviour:
   _prefabs:
   - {fileID: 4890333992741538634, guid: 122798b4f823e6f4090dad71579f6c6c, type: 3}
   - {fileID: 4995662972474505059, guid: 9efcd888c04fdf84c828575c5ef2642d, type: 3}
+  - {fileID: 4995662972474505059, guid: 7e6d77aacca1d914c80806be394c701d, type: 3}
+  - {fileID: 4995662972474505059, guid: e63963411a1448546a579dd226dfae35, type: 3}
   _slideDuration: 1.25
   _leftViewportX: -0.5
   _centerViewportX: 0.5
