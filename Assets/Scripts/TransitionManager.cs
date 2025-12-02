@@ -38,12 +38,6 @@ public class TransitionManager : MonoBehaviour
     // guard: only allow starting a new slide if the incoming object has finished moving to center
     bool _isAnimating = false;
 
-    // Start is called once before the first execution of Update after the MonoBehavior is created
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -212,5 +206,15 @@ public class TransitionManager : MonoBehaviour
         float distance = worldZ - Camera.main.transform.position.z;
         Vector3 vp = new Vector3(viewportX, viewportY, distance);
         return Camera.main.ViewportToWorldPoint(vp);
+    }
+
+    public void HandleImageTracked(string targetName)
+    {
+        SlideByName(targetName);
+    }
+
+    public void HandleImageLost(string targetName)
+    {
+        // Currently no action on image lost
     }
 }

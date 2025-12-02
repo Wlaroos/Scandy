@@ -1140,7 +1140,7 @@ MonoBehaviour:
       containerId: overlay-container--right
       displayed: 0
       id: XR Building Blocks
-      index: 17
+      index: 16
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":24.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
       floating: 0
       collapsed: 0
@@ -1177,7 +1177,7 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -1.1392609, y: -0.3342772, z: -0.01820366}
+    m_Target: {x: -0.83814245, y: -1.221203, z: 53.65467}
     speed: 2
     m_Value: {x: -1.1392609, y: -0.3342772, z: -0.01820366}
   m_RenderMode: 0
@@ -1229,7 +1229,7 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 11.820552
+    m_Target: 5.799468
     speed: 2
     m_Value: 11.820552
   m_Ortho:
@@ -1384,7 +1384,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 15}
     m_SelectedIDs: 2a140100
     m_LastClickedID: 70698
-    m_ExpandedIDs: 000000004aca0000
+    m_ExpandedIDs: 0000000058bf00005abf00005cbf0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1413,7 +1413,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000004aca0000
+    m_ExpandedIDs: 0000000058bf00005abf00005cbf0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

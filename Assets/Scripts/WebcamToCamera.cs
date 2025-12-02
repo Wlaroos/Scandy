@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// IMPORTANT: No changes needed in this script if using the RawImage approach.
+// This script will drive the RawImage component which you will size and position
+// to take up a sub-section of the screen.
 public class WebcamToCamera : MonoBehaviour
 {
     [Header("Webcam settings")]
-    [SerializeField] private string deviceName = "Live! Cam Chat HD VF0790";       // leave blank to auto-select first device
+    [SerializeField] private string deviceName = "";       // leave blank to auto-select first device
     [SerializeField] private int requestedWidth = 1280;
     [SerializeField] private int requestedHeight = 720;
     [SerializeField] private int requestedFPS = 30;
@@ -18,7 +21,7 @@ public class WebcamToCamera : MonoBehaviour
 
     void Awake()
     {
-        
+
     }
 
     void OnEnable()
@@ -45,6 +48,13 @@ public class WebcamToCamera : MonoBehaviour
 
         if (string.IsNullOrEmpty(deviceName))
             deviceName = devices[0].name;
+
+        // Use the default if not specified
+        if (string.IsNullOrEmpty(deviceName))
+        {
+            deviceName = devices[0].name;
+        }
+
 
         webcamTexture = new WebCamTexture(deviceName, requestedWidth, requestedHeight, requestedFPS);
         webcamTexture.Play();
@@ -78,7 +88,7 @@ public class WebcamToCamera : MonoBehaviour
         webcamTexture = null;
     }
 
-    // If not using RawImage, replace the camera output with the webcam feed.
+    // OnRenderImage is now harmless when useRawImage is true, so we keep it.
     void OnRenderImage(RenderTexture src, RenderTexture dest)
     {
         if (!useRawImage)
